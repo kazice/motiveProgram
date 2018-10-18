@@ -1,0 +1,4 @@
+<launch>
+	<node pkg="mav_client" type="mav_client_node" name="mav_client_node" output="screen"/>
+	<node pkg="rosbag" type="record" name="record" output="screen" args="-o /home/ubuntu/subset /mav_client/debug"/>
+</launch>

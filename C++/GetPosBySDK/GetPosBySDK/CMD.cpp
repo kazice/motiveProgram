@@ -1,0 +1,279 @@
+#include "StdAfx.h"
+#include <stdio.h>
+#include <tchar.h>
+#include <conio.h>
+#include <winsock2.h>
+#include "PIDController.h"
+#include "GetPosBySDK.h"
+#include "CMD.h"
+
+#pragma warning( disable : 4996 )
+int c;
+bool bExit = false;
+int cmd_dis;
+bool bMenuFlag = false;
+DATA_DIS bDataDisplay = {false};
+
+
+void CMD_deal(int cmd)
+{	
+	printf("The input CMD is:%c\n",cmd);
+	switch(cmd)
+	{
+		case 'a':
+			SendCmdData.chsendCmdBuf[1] = 0x02; 
+			SendCmdData.chsendCmdBuf[2] = c;
+			send(sockClient,SendCmdData.chsendCmdBuf,sizeof(SendCmdData.chsendCmdBuf),0);
+			break;
+		case 'b':
+			SendCmdData.chsendCmdBuf[1] = 0x02; 
+			SendCmdData.chsendCmdBuf[2] = c;
+			send(sockClient,SendCmdData.chsendCmdBuf,sizeof(SendCmdData.chsendCmdBuf),0);
+			break;
+		case 'c':
+			SendCmdData.chsendCmdBuf[1] = 0x02; 
+			SendCmdData.chsendCmdBuf[2] = c;
+			send(sockClient,SendCmdData.chsendCmdBuf,sizeof(SendCmdData.chsendCmdBuf),0);
+			break;
+		case 'd':
+			SendCmdData.chsendCmdBuf[1] = 0x02; 
+			SendCmdData.chsendCmdBuf[2] = c;
+			send(sockClient,SendCmdData.chsendCmdBuf,sizeof(SendCmdData.chsendCmdBuf),0);
+			break;
+		case 'e':
+			SendCmdData.chsendCmdBuf[1] = 0x02; 
+			SendCmdData.chsendCmdBuf[2] = c;
+			send(sockClient,SendCmdData.chsendCmdBuf,sizeof(SendCmdData.chsendCmdBuf),0);
+			break;
+		case 'f':
+			SendCmdData.chsendCmdBuf[1] = 0x02; 
+			SendCmdData.chsendCmdBuf[2] = c;
+			send(sockClient,SendCmdData.chsendCmdBuf,sizeof(SendCmdData.chsendCmdBuf),0);
+			break;
+		case 'g':
+			SendCmdData.chsendCmdBuf[1] = 0x02; 
+			SendCmdData.chsendCmdBuf[2] = c;
+			send(sockClient,SendCmdData.chsendCmdBuf,sizeof(SendCmdData.chsendCmdBuf),0);
+			break;
+		case 'i':
+			printf("Input the DesPos of UAV:");
+			scanf("%f",&DesPosUAV.flz);
+			if(DesPosUAV.flz < 0.3f ||DesPosUAV.flz > 1.0f)
+			{
+				printf("The Input is error, Please input 'i' and try again!\n");
+			}
+			else
+			{
+				printf("The DesPos of Z is:%f\n",DesPosUAV.flz);
+				enControlStateZ = POS;
+				enRunStateZ = FIRST;
+			}
+			break;
+		case 'j':
+			printf("Input the DesPos of UAV:");
+			scanf("%f",&DesPosUAV.flx);
+			if(DesPosUAV.flx < -0.7f ||DesPosUAV.flx > 0.7f)
+			{
+				printf("The Input is error, Please input 'j' and try again!\n");
+			}
+			else
+			{
+				printf("The DesPos of X is:%f\n",DesPosUAV.flx);
+				enControlStateX = POS;
+				enRunStateX = FIRST;
+			}
+			break;
+		case 'l':
+			printf("Input the DesPos of UAV:");
+			scanf("%f",&DesPosUAV.fly);
+			if(DesPosUAV.fly < -0.7f ||DesPosUAV.fly > 0.7f)
+			{
+				printf("The Input is error, Please input 'l' and try again!\n");
+			}
+			else
+			{
+				printf("The DesPos of Y is:%f\n",DesPosUAV.fly);
+				enControlStateY = POS;
+				enRunStateY = FIRST;
+			}
+			break;
+		case 'k':
+			bMenuFlag = !bMenuFlag;
+			break;
+		case 'q':
+			bExit = true;
+			closesocket(sockClient);
+			closesocket(sockClientM);
+			outVelt.close();
+			outPos.close();
+			outAttitude.close();
+			break;	
+		case 's':
+			Display_CMD_Deal();
+			break;
+		case 'r':
+			resetClient();
+			break;
+		case 'z':
+			resetUAV();
+			break;
+		case 'x':
+			printf("Input the DesVelt of UAV:");
+			scanf("%f",&DesVeltUAV.flx);
+			if(DesVeltUAV.flx < -2.0f ||DesVeltUAV.flx > 2.0f)
+			{
+				printf("The Input is error, Please input 'x' and try again!\n");
+			}
+			else
+			{
+				printf("The DesVelt of X is:%f\n",DesVeltUAV.flx);
+				enControlStateX = VELT;
+				enRunStateX = FIRST;
+			}
+			break;
+		case 'y':
+			printf("Input the DesVelt of UAV:");
+			scanf("%f",&DesVeltUAV.fly);
+			if(DesVeltUAV.fly < -2.0f ||DesVeltUAV.fly > 2.0f)
+			{
+				printf("The Input is error, Please input 'y' and try again!\n");
+			}
+			else
+			{
+				printf("The DesVelt of Y is:%f\n",DesVeltUAV.fly);
+				enControlStateY = VELT;
+				enRunStateY = FIRST;
+			}
+			break;
+		//case 'p':
+		//    sServerDescription ServerDescription;
+		//    memset(&ServerDescription, 0, sizeof(ServerDescription));
+		//    theClient->GetServerDescription(&ServerDescription);
+		//    if(!ServerDescription.HostPresent)
+		//    {
+		//        printf("Unable to connect to server. Host not present. Exiting.");
+		//        return 1;
+		//    }
+		//    break;	
+		//case 'f':
+		//    {
+		//        sFrameOfMocapData* pData = theClient->GetLastFrameOfData();
+		//        printf("Most Recent Frame: %d", pData->iFrame);
+		//    }
+		//    break;	
+		//case 'm':	                        // change to multicast
+		//    iConnectionType = ConnectionType_Multicast;
+		//    iResult = CreateClient(iConnectionType);
+		//    if(iResult == ErrorCode_OK)
+		//        printf("Client connection type changed to Multicast.\n\n");
+		//    else
+		//        printf("Error changing client connection type to Multicast.\n\n");
+		//    break;
+		//case 'u':	                        // change to unicast
+		//    iConnectionType = ConnectionType_Unicast;
+		//    iResult = CreateClient(iConnectionType);
+		//    if(iResult == ErrorCode_OK)
+		//        printf("Client connection type changed to Unicast.\n\n");
+		//    else
+		//        printf("Error changing client connection type to Unicast.\n\n");
+		//    break;
+		//case 'y' :                          // connect
+		//    iResult = CreateClient(iConnectionType);
+		//    break;
+		//case 'z' :                          // disconnect
+		//    // note: applies to unicast connections only - indicates to Motive to stop sending packets to that client endpoint
+		//    iResult = theClient->SendMessageAndWait("Disconnect", &response, &nBytes);
+		//    if (iResult == ErrorCode_OK)
+		//        printf("[SampleClient] Disconnected");
+		//    break;
+		default:
+			break;
+	}
+}
+
+void Display_CMD_Deal(void)
+{
+	bMenuFlag = true;
+	Display_CMD_Menu();
+	cmd_dis =_getch();
+	printf("The input CMD is:%c\n",cmd_dis);
+	switch(cmd_dis)
+	{
+		case 'a':
+			bDataDisplay.PosX = !bDataDisplay.PosX;
+			break;
+		case 'b':
+			bDataDisplay.PosY = !bDataDisplay.PosY;
+			break;
+		case 'c':
+			bDataDisplay.PosZ = !bDataDisplay.PosZ;
+			break;
+		case 'd':
+			bDataDisplay.VeltX = !bDataDisplay.VeltX;
+			break;
+		case 'e':
+			bDataDisplay.VeltY = !bDataDisplay.VeltY;
+			break;
+		case 'f':
+			bDataDisplay.VeltZ = !bDataDisplay.VeltZ;
+			break;
+		case 'g':
+			bDataDisplay.Pos = !bDataDisplay.Pos;
+			break;
+		case 'h':
+			bDataDisplay.Velt = !bDataDisplay.Velt;
+			break;
+		case 'i':
+			bDataDisplay.OutputVeltX = !bDataDisplay.OutputVeltX;
+			break;
+		case 'j':
+			bDataDisplay.OutputVeltY = !bDataDisplay.OutputVeltY;
+			break;
+		case 'k':
+			bDataDisplay.OutputVeltZ = !bDataDisplay.OutputVeltZ;
+			break;
+		case 'l':
+			bDataDisplay.OutputAttitudeRoll = !bDataDisplay.OutputAttitudeRoll;
+			break;
+		case 'm':
+			bDataDisplay.OutputAttitudePitch = !bDataDisplay.OutputAttitudePitch;
+			break;
+		case 'n':
+			bDataDisplay.OutputAttitudeYaw = !bDataDisplay.OutputAttitudeYaw;
+			break;
+		case 'q':
+			break;
+		default:
+			break;
+	}
+	bMenuFlag = false;
+}
+
+void Display_CMD_Menu(void)
+{
+	printf("\r\n");
+    printf("+-------------------------- < Main menu > ------------------------+\n");
+	printf("| [a] Pos of x(%d)          | [q] Quit without change     |\n",bDataDisplay.PosX);
+	printf("| [b] Pos of y(%d)          | [g] Pos of UAV by Track(%d) |\n",bDataDisplay.PosY,bDataDisplay.Pos);	
+	printf("| [c] Pos of z(%d)          | [h] Velt of UAV by Track(%d)|\n",bDataDisplay.PosZ,bDataDisplay.Velt);	
+	printf("| [d] Velt of x(%d)         | [i] Output of VeltX(%d)     |\n",bDataDisplay.VeltX,bDataDisplay.OutputVeltX);	
+	printf("| [e] Velt of y(%d)         | [j] Output of VeltY(%d)     |\n",bDataDisplay.VeltY,bDataDisplay.OutputVeltY);
+	printf("| [f] Velt of z(%d)         | [k] Output of VeltX(%d)     |\n",bDataDisplay.VeltZ,bDataDisplay.OutputVeltZ);
+	printf("| [l] Attitude of roll(%d)  |                             |\n",bDataDisplay.OutputAttitudeRoll);
+	printf("| [m] Attitude of pitch(%d) |                             |\n",bDataDisplay.OutputAttitudePitch);
+	printf("| [n] Attitude of yaw(%d)   |                             |\n",bDataDisplay.OutputAttitudeYaw);
+	printf("+-----------------------------------------------------------------+\n");
+    printf("input a/b/c etc..then press enter key\r\n");
+    printf("The windows will show/hide the data you want to see(0-hide,1-show)\r\n");
+    printf("----------------------------------------\r\n");
+}
+
+void resetUAV(void)
+{
+	enRunStateX = NEVER;
+	enRunStateY = NEVER;
+	enRunStateZ = NEVER;
+	SendCmdData.chsendCmdBuf[1] = 0x02; 
+	SendCmdData.chsendCmdBuf[2] = c;
+	send(sockClient,SendCmdData.chsendCmdBuf,sizeof(SendCmdData.chsendCmdBuf),0);
+}

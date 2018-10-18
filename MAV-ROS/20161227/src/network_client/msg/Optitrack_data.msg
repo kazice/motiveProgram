@@ -1,0 +1,14 @@
+Header header
+float32 posx
+float32 posy
+float32 posz
+float32 veltx
+float32 velty
+float32 veltz
+float32 roll
+float32 yaw
+float32 pitch
+#data health
+uint8 health_flag
+uint8 network_health_flag
+float32 delay

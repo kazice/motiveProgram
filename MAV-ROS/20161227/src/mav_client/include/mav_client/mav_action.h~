@@ -1,0 +1,22 @@
+/*
+ * mav_action.h
+ *
+ *  Created on: Dec 6, 2016
+ *      Author: yw
+ */
+
+#ifndef MAV_ACTION_H_
+#define MAV_ACTION_H_
+
+#include <mav_client/lib_pid_controller.h>
+#include <mavros_msgs/OverrideRCIn.h>
+
+extern POS_MAV realPosMAV;
+extern ATT_MAV realAttMAV;
+extern mavros_msgs::OverrideRCIn RC_controller_output;
+void mav_takeoff(void);
+void mav_land(void);
+void data_init(void);
+
+
+#endif /* SRC_MAV_CLIENT_SRC_MAV_ACTION_H_ */

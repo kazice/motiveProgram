@@ -1,0 +1,3 @@
+<launch>
+	<node pkg="rosbag" type="record" name="record" output="screen" args="-o /home/ubuntu/subset /mav_client/debug"/>
+</launch>
